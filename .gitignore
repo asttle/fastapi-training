@@ -33,3 +33,9 @@ share/python-wheels/
 *.egg
 MANIFEST
 *.db
+
+# Environment variables
+.env
+.env.example
+.env.local
+.env.*.local
