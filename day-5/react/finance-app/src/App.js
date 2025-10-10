@@ -9,9 +9,8 @@ function App() {
     category: '',
     description: '',
     is_income: false,
-    category: 
-
-  })
+    date: '',
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -40,12 +39,79 @@ function App() {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await api.post('/transactions/', formData);
+      setTransactions((prev) => [response.data, ...prev]);
+      setFormData({
+        amount: '',
+        category: '',
+        description: '',
+        is_income: false,
+        date: '',
+      });
+      setError(null);
+    } catch (error) {
+      setError(error);
+    }
+  };
+
   return (
     <div className="App">
-      <h1>Transactions</h1>
-      <ul>
+      <h1>Finance Transactions</h1>
+      <form onSubmit={handleSubmit} className="transaction-form">
+        <input
+          type="number"
+          name="amount"
+          placeholder="Amount"
+          value={formData.amount}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
+          name="category"
+          placeholder="Category"
+          value={formData.category}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="text"
+          name="description"
+          placeholder="Description"
+          value={formData.description}
+          onChange={handleChange}
+        />
+        <label>
+          Income?
+          <input
+            type="checkbox"
+            name="is_income"
+            checked={formData.is_income}
+            onChange={handleChange}
+          />
+        </label>
+        <input
+          type="date"
+          name="date"
+          value={formData.date}
+          onChange={handleChange}
+          required
+        />
+        <button type="submit">Add Transaction</button>
+      </form>
+      <h2>Transactions List</h2>
+      <ul className="transaction-list">
         {transactions.map((transaction) => (
-          <li key={transaction.id}>{transaction.amount}</li>
+          <li key={transaction.id} className={transaction.is_income ? 'income' : 'expense'}>
+            <span>{transaction.date}</span> | 
+            <span>{transaction.category}</span> | 
+            <span>{transaction.description}</span> | 
+            <span>{transaction.is_income ? '+' : '-'}${transaction.amount}</span>
+          </li>
         ))}
       </ul>
     </div>
