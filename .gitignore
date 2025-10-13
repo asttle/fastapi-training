@@ -33,6 +33,8 @@ share/python-wheels/
 *.egg
 MANIFEST
 *.db
+dependancies/
+*.zip
 
 # Environment variables
 .env
