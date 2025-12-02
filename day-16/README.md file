@@ -1,0 +1,231 @@
+# Day 16 — FastAPI project (Deployment -> Vercel)
+
+Overview
+- This folder contains a FastAPI backend (day-16). Run locally with uvicorn for development and deploy to Vercel for staging/production using the Vercel CLI.
+- The README below documents local commands, Vercel CLI commands used for project creation / authentication / deploy, environment variable management and how to view the deployed project and logs.
+
+Quick local run
+1. Create and activate a venv (macOS):
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Start dev server:
+   ```bash
+   uvicorn main:app --reload --host 127.0.0.1 --port 8000
+   ```
+4. Open docs:
+   - http://127.0.0.1:8000/docs
+
+Vercel — CLI install & auth (one-time)
+1. Install Vercel CLI:
+   ```bash
+   npm install -g vercel
+   ```
+2. Log in / authenticate:
+   ```bash
+   vercel login
+   ```
+   - Follow the prompt to authenticate with your Vercel account (opens browser or gives a one-time code).
+3. (Optional) Link local project to a Vercel project (first deploy will prompt to create/link automatically):
+   ```bash
+   cd day-16
+   vercel link   # interactively link to an existing Vercel project
+   ```
+
+Deploying to Vercel
+- Basic interactive deploy (recommended first time):
+  ```bash
+  cd day-16
+  vercel
+  ```
+  - Follow prompts: select scope, project name, root directory, and whether to link to a Git repository.
+- Production deploy:
+  ```bash
+  vercel --prod
+  ```
+- Force a new production deploy non-interactively:
+  ```bash
+  vercel --prod --confirm
+  ```
+
+Environment variables on Vercel
+- Add an environment variable (interactive):
+  ```bash
+  vercel env add SECRET_KEY production
+  ```
+- Set preview or development env:
+  ```bash
+  vercel env add SECRET_KEY preview
+  vercel env add SECRET_KEY development
+  ```
+- Pull remote env vars into a local .env file:
+  ```bash
+  vercel env pull .env
+  ```
+- To list values or modify, use the Vercel dashboard (recommended for secrets).
+
+View deployed project
+- After deploy, the CLI prints the deployment URL (e.g. https://project-name-gggg.vercel.app).
+- Open from CLI:
+  ```bash
+  vercel open
+  ```
+- Or visit the Vercel dashboard: https://vercel.com/dashboard -> choose your team/project -> click the latest deployment.
+
+Logs & troubleshooting
+- View recent logs for a deployment:
+  ```bash
+  vercel logs <deployment-url-or-id> --since 1h
+  ```
+- Example:
+  ```bash
+  vercel logs https://project-name-gggg.vercel.app --since 1h
+  ```
+- For build-time errors, check the "Builds" tab in the Vercel dashboard for the project.
+
+Recommended Vercel project approaches
+- Option A — Container (Docker) deploy: include a Dockerfile at project root. Vercel can build Docker-based projects (good when you need a full environment).
+- Option B — Serverless functions or Python runtime: provide an `api/` handler or use the official Vercel Python builder if available. Confirm supported runtime/builders in Vercel docs.
+
+Example minimal vercel.json for Docker-based deploy
+```json
+{
+  "version": 2,
+  "builds": [
+    { "src": "Dockerfile", "use": "@vercel/docker" }
+  ]
+}
+```
+(Adjust depending on chosen deploy method.)
+
+Notes & tips
+- Vercel is primarily optimized for frontend and serverless functions. For long-running or stateful backends consider platforms like Render, Railway, or Fly — or use Docker deployments on Vercel if needed.
+- Keep secrets out of code. Use vercel env (or dashboard) for SECRET_KEY, DB credentials.
+- If your app uses SQLite, remember Vercel’s serverless environment is ephemeral — use an external DB for persistent storage in production.
+
+If you want, I can:
+- generate a vercel.json and Dockerfile tuned to the code in this folder,
+- add env var commands for the exact SECRET_KEY names used by your app,
+- or create a small CI workflow (GitHub Actions) to auto-deploy on push.
+
+```// filepath: /Users/asttle/Desktop/fastapi-learnings/fastapi-training/day-16/README.md
+
+# Day 16 — FastAPI project (Deployment -> Vercel)
+
+Overview
+- This folder contains a FastAPI backend (day-16). Run locally with uvicorn for development and deploy to Vercel for staging/production using the Vercel CLI.
+- The README below documents local commands, Vercel CLI commands used for project creation / authentication / deploy, environment variable management and how to view the deployed project and logs.
+
+Quick local run
+1. Create and activate a venv (macOS):
+   ```bash
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Start dev server:
+   ```bash
+   uvicorn main:app --reload --host 127.0.0.1 --port 8000
+   ```
+4. Open docs:
+   - http://127.0.0.1:8000/docs
+
+Vercel — CLI install & auth (one-time)
+1. Install Vercel CLI:
+   ```bash
+   npm install -g vercel
+   ```
+2. Log in / authenticate:
+   ```bash
+   vercel login
+   ```
+   - Follow the prompt to authenticate with your Vercel account (opens browser or gives a one-time code).
+3. (Optional) Link local project to a Vercel project (first deploy will prompt to create/link automatically):
+   ```bash
+   cd day-16
+   vercel link   # interactively link to an existing Vercel project
+   ```
+
+Deploying to Vercel
+- Basic interactive deploy (recommended first time):
+  ```bash
+  cd day-16
+  vercel
+  ```
+  - Follow prompts: select scope, project name, root directory, and whether to link to a Git repository.
+- Production deploy:
+  ```bash
+  vercel --prod
+  ```
+- Force a new production deploy non-interactively:
+  ```bash
+  vercel --prod --confirm
+  ```
+
+Environment variables on Vercel
+- Add an environment variable (interactive):
+  ```bash
+  vercel env add SECRET_KEY production
+  ```
+- Set preview or development env:
+  ```bash
+  vercel env add SECRET_KEY preview
+  vercel env add SECRET_KEY development
+  ```
+- Pull remote env vars into a local .env file:
+  ```bash
+  vercel env pull .env
+  ```
+- To list values or modify, use the Vercel dashboard (recommended for secrets).
+
+View deployed project
+- After deploy, the CLI prints the deployment URL (e.g. https://project-name-gggg.vercel.app).
+- Open from CLI:
+  ```bash
+  vercel open
+  ```
+- Or visit the Vercel dashboard: https://vercel.com/dashboard -> choose your team/project -> click the latest deployment.
+
+Logs & troubleshooting
+- View recent logs for a deployment:
+  ```bash
+  vercel logs <deployment-url-or-id> --since 1h
+  ```
+- Example:
+  ```bash
+  vercel logs https://project-name-gggg.vercel.app --since 1h
+  ```
+- For build-time errors, check the "Builds" tab in the Vercel dashboard for the project.
+
+Recommended Vercel project approaches
+- Option A — Container (Docker) deploy: include a Dockerfile at project root. Vercel can build Docker-based projects (good when you need a full environment).
+- Option B — Serverless functions or Python runtime: provide an `api/` handler or use the official Vercel Python builder if available. Confirm supported runtime/builders in Vercel docs.
+
+Example minimal vercel.json for Docker-based deploy
+```json
+{
+  "version": 2,
+  "builds": [
+    { "src": "Dockerfile", "use": "@vercel/docker" }
+  ]
+}
+```
+(Adjust depending on chosen deploy method.)
+
+Notes & tips
+- Vercel is primarily optimized for frontend and serverless functions. For long-running or stateful backends consider platforms like Render, Railway, or Fly — or use Docker deployments on Vercel if needed.
+- Keep secrets out of code. Use vercel env (or dashboard) for SECRET_KEY, DB credentials.
+- If your app uses SQLite, remember Vercel’s serverless environment is ephemeral — use an external DB for persistent storage in production.
+
+If you want, I can:
+- generate a vercel.json and Dockerfile tuned to the code in this folder,
+- add env var commands for the exact SECRET_KEY names used by your app,
+- or create a small CI workflow (GitHub Actions) to auto-deploy on push.
